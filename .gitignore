@@ -1,0 +1,8 @@
+# Patterns to ignore when building/committing code.
+*.txt
+*.tmp
+.bzr/
+.bzrignore
+.hg/
+.hgignore
+.svn/
