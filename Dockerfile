@@ -1,23 +1,49 @@
-FROM jenkins/jenkins:lts
+FROM bobbybabu007/jenkins:v1
 
-# Running as root to have an easy support for Docker
-USER root
+# Distributed Builds plugins
+RUN /usr/local/bin/install-plugins.sh ssh-slaves
+RUN /usr/local/bin/install-plugins.sh gradle
 
-# Jenkins init scripts
-COPY security.groovy /usr/share/jenkins/ref/init.groovy.d/
+# install Notifications and Publishing plugins
+RUN /usr/local/bin/install-plugins.sh email-ext
+RUN /usr/local/bin/install-plugins.sh mailer
+RUN /usr/local/bin/install-plugins.sh slack
 
-# Install Jenkins plugins
-COPY plugins.txt /usr/share/jenkins/plugins.txt
-RUN /usr/local/bin/install-plugins.sh $(cat /usr/share/jenkins/plugins.txt) && \
-    mkdir -p /usr/share/jenkins/ref/ && \
+# Artifacts
+RUN /usr/local/bin/install-plugins.sh htmlpublisher
+
+# UI
+RUN /usr/local/bin/install-plugins.sh greenballs
+RUN /usr/local/bin/install-plugins.sh simple-theme-plugin
+
+# Scaling
+RUN /usr/local/bin/install-plugins.sh kubernetes
+
+COPY plugins-pack-1.txt /tmp/jenkins/plugins-pack-1.txt
+#RUN /usr/local/bin/install-plugins.sh $(cat /tmp/jenkins/plugins.txt)
+
+RUN mkdir -p /usr/share/jenkins/ref/ && \
     echo lts > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state && \
     echo lts > /usr/share/jenkins/ref/jenkins.install.InstallUtil.lastExecVersion
 
+USER root
 # Install Docker, kubectl and helm
-#RUN apt-get -qq update && \
-#    apt-get -qq -y install curl && \
-#    curl -sSL https://get.docker.com/ | sh && \
+RUN apt -qq update && \
+    mkdir -p /var/lib/apt/lists/partial && \
+    apt -qq -y install curl wget nano unzip python3-dev python3-setuptools python3-pip python3-yaml
+
+#RUN curl -sSL https://get.docker.com/ | sh && \
 #    curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
 #    chmod +x ./kubectl && \
 #    mv ./kubectl /usr/local/bin/kubectl
 
+# Install Ansible
+ENV pip_packages "ansible"
+RUN pip3 install --upgrade pip
+RUN pip3 install $pip_packages
+
+# Create Ansible Inventory File
+RUN mkdir -p /etc/ansible && \
+    echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+
+USER jenkins

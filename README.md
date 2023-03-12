@@ -33,13 +33,13 @@ docker image push bobbybabu007/jenkins-nonprod:<VERSION>
 <br>
 
 # Jenkins in Kubernetes
-This repository has a `Dockerfile` and a `helm` chart for setting up a simple Jenkins master for running in Kubernetes.
+This repository has a `Dockerfile` and Jenkins official `helm` chart for setting up a simple Jenkins master for running in Kubernetes.
 
 This Jenkins has the required tools to work in and with Kubernetes
-- Jenkins application with pre-loaded plugins (see [plugins.txt](plugins.txt))
+- Jenkins application with pre-loaded plugins (see [plugins-pack-1.txt](plugins.txt))
 - Skipped setup wizard
   - You can control admin user and password with `--set adminUser=${USER},adminPassword=${PASSWORD}`
-  - You can add and remove plugins by editing the [plugins.txt](plugins.txt) file
+  - You can add and remove plugins by editing the [plugins-pack-1.txt](plugins.txt) file
 
 
 ### Build the Jenkins Docker image
