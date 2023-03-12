@@ -23,15 +23,6 @@ docker container exec -it jenkins "cat /var/jenkins_home/secrets/initialAdminPas
 
 <br>
 
-# Customize your Jenkins instance 
-Build & Push your custom Jenkins-nonprod image to DockerHub
-
-``` powershell
-docker image build -t bobbybabu007/jenkins-nonprod:<VERSION> -f ./docker/Dockerfile-jenkins .
-docker image push bobbybabu007/jenkins-nonprod:<VERSION>
-```
-<br>
-
 # Jenkins in Kubernetes
 This repository has a `Dockerfile` and Jenkins official `helm` chart for setting up a simple Jenkins master for running in Kubernetes.
 
@@ -41,21 +32,11 @@ This Jenkins has the required tools to work in and with Kubernetes
   - You can control admin user and password with `--set adminUser=${USER},adminPassword=${PASSWORD}`
   - You can add and remove plugins by editing the [plugins-pack-1.txt](plugins.txt) file
 
-
-### Build the Jenkins Docker image
-You can build the image yourself
-```bash
-
-# Build the image
-$ docker build -t bobbybabu007/jenkins-prod:1.0.0 .
-
-# Push the image
-$ docker push bobbybabu007/jenkins-prod:1.0.0
-```
+<br>
 
 ### Deploy Jenkins helm chart to Kubernetes
 ```bash
-# Init helm and tiller on your cluster
+# Init helm on your cluster
 $ helm init
 $ kubectl apply -f rbac-config.yaml
 
@@ -64,7 +45,29 @@ $ kubectl apply -f rbac-config.yaml
 $ helm upgrade --install jenkins ./helm/jenkins-k8s
 ```
 
-### Data persistence
+# Customize & Build your Jenkins 
+
+- Build & Push your custom Jenkins-nonprod image to DockerHub
+
+``` powershell
+# Build the image
+docker image build -t bobbybabu007/jenkins-nonprod:<VERSION> -f Dockerfile-nonprod .
+
+# Push the image
+docker image push bobbybabu007/jenkins-nonprod:<VERSION>
+```
+<br>
+- Build & Push your custom Jenkins-prod image to DockerHub
+
+```powershell
+# Build the image
+$ docker image build -t bobbybabu007/jenkins:<VERSION>  -f Dockerfile-prod .
+
+# Push the image
+$ docker push bobbybabu007/jenkins:<VERSION>
+```
+
+# Data persistence
 By default, in Kubernetes, the Jenkins deployment uses a persistent volume claim that is mounted to `/var/jenkins_home`.
 This assures your data is saved across crashes, restarts and upgrades.   
 

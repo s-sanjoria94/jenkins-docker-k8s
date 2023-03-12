@@ -19,7 +19,7 @@ RUN /usr/local/bin/install-plugins.sh simple-theme-plugin
 # Scaling
 RUN /usr/local/bin/install-plugins.sh kubernetes
 
-COPY plugins-pack-1.txt /tmp/jenkins/plugins-pack-1.txt
+COPY plugins.txt /tmp/jenkins/plugins.txt
 #RUN /usr/local/bin/install-plugins.sh $(cat /tmp/jenkins/plugins.txt)
 
 RUN mkdir -p /usr/share/jenkins/ref/ && \
