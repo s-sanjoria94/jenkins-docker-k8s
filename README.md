@@ -42,7 +42,7 @@ $ kubectl apply -f rbac-config.yaml
 
 # Deploy the Jenkins helm chart
 # (same command for install and upgrade)
-$ helm upgrade --install jenkins ./helm/jenkins-k8s
+$ helm upgrade --install jenkins ./helm/jenkins
 ```
 
 # Customize & Build your Jenkins 
@@ -56,7 +56,9 @@ docker image build -t bobbybabu007/jenkins-nonprod:<VERSION> -f Dockerfile-nonpr
 # Push the image
 docker image push bobbybabu007/jenkins-nonprod:<VERSION>
 ```
+
 <br>
+
 - Build & Push your custom Jenkins-prod image to DockerHub
 
 ```powershell
