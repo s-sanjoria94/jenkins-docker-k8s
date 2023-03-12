@@ -1,0 +1,52 @@
+# This docker-compose file intents to create a multi-container application
+# that runs a Jenkins container connected via TLS to a Docker-in-Docker (dind) container as Docker daemon.
+#
+# It uses an expanded entrypoint that first installs the docker-workflow plugin before starting Jenkins.
+#
+# Quick reference about Docker-in-Docker can be found at:
+# https://hub.docker.com/_/docker
+#
+# Main source: https://www.jenkins.io/doc/tutorials/create-a-pipeline-in-blue-ocean/
+
+version: "3.9"
+services:
+  jenkins:
+    container_name: jenkins
+    user: jenkins
+    privileged: true
+    image: bobbybabu007/jenkins-nonprod:1.0.0
+#    jenkins/jenkins:lts-jdk11
+#    entrypoint: ["jenkins-plugin-cli", "--plugins", "docker-workflow", "&&", "/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
+    ports:
+      - 8080:8080
+    networks:
+      - jenkins
+    environment:
+      - DOCKER_HOST=tcp://docker:2376
+      - DOCKER_CERT_PATH=/certs/client
+      - DOCKER_TLS_VERIFY=1
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.model.DirectoryBrowserSupport.CSP=""
+    volumes:
+      - $HOME\docker\volume:/var/jenkins_home
+      - jenkins-docker-certs:/certs/client
+  dind:
+    container_name: docker
+    image: docker:dind
+    privileged: true
+    ports:
+      - 2376:2376
+    networks:
+      jenkins:
+        aliases:
+          - docker
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    volumes:
+      - jenkins-docker-certs:/certs/client
+
+volumes:
+  jenkins-docker-certs:
+  jenkins-data:
+
+networks:
+  jenkins:

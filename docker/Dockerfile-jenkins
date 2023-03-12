@@ -1,0 +1,23 @@
+FROM jenkins/jenkins:lts-jdk11
+
+USER root
+
+RUN apt-get update && apt-get install -y lsb-release
+
+RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
+  https://download.docker.com/linux/debian/gpg
+
+RUN echo "deb [arch=$(dpkg --print-architecture) \
+  signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
+  https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
+RUN apt-get update && \
+    apt-get install -y docker-ce-cli wget curl nano sudo zip python-is-python3 maven gradle ansible 
+
+RUN sudo usermod -aG sudo jenkins
+
+RUN chown -R 775 /var/jenkins_home /tmp
+
+USER jenkins
+#RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
