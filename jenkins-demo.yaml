@@ -44,7 +44,23 @@ jenkins:
             key: "hudson.tasks.Maven$MavenInstallation$DescriptorImpl@default"
       remoteFS: "/home/jenkins"
       retentionStrategy: "always"
-  numExecutors: 2
+  - permanent:
+      labelString: "wnode2"
+      launcher:
+        ssh:
+          credentialsId: "jenkins-master-user"
+          host: "18.188.187.205"
+          port: 22
+          sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
+      name: "wnode2"
+      nodeProperties:
+      - toolLocation:
+          locations:
+          - home: "/usr/share/maven"
+            key: "hudson.tasks.Maven$MavenInstallation$DescriptorImpl@default"
+      remoteFS: "/home/jenkins"
+      retentionStrategy: "always"
+numExecutors: 2
   primaryView:
     all:
       name: "all"
