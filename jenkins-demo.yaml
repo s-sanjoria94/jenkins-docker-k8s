@@ -28,28 +28,18 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-      - id: "admin"
-        name: "admin"
+      - id: "pragra"
+        name: "pragra"
         properties:
         - "myView"
         - preferredProvider:
             providerId: "default"
         - "timezone"
         - mailer:
-            emailAddress: "admin@company.com"
-        - "apiToken"
-      - id: "deepak"
-        name: "deepak"
-        properties:
-        - "myView"
-        - preferredProvider:
-            providerId: "default"
-        - "timezone"
-        - mailer:
-            emailAddress: "deepak@company.com"
+            emailAddress: "pragra@company.com"
         - "apiToken"
   slaveAgentPort: -1
-  systemMessage: "This is Jenkins@Pragra"
+  systemMessage: "This is Deepak@Pragra"
   updateCenter:
     sites:
     - id: "default"
