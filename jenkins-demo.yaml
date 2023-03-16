@@ -133,6 +133,14 @@ tool:
     installations:
     - home: "git"
       name: "Default"
+  gradle:
+    installations:
+    - home: "/usr/share/gradle"
+      name: "default"
+  maven:
+    installations:
+    - home: "/usr/share/maven"
+      name: "default"
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
