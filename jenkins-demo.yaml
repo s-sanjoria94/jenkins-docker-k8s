@@ -1,3 +1,15 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - basicSSHUserPrivateKey:
+          description: "jenkins-master-user"
+          id: "jenkins-master-user"
+          privateKeySource:
+            directEntry:
+              privateKey: "{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}"
+          scope: GLOBAL
+          username: "jenkins"
 jenkins:
   agentProtocols:
   - "JNLP4-connect"
@@ -11,9 +23,27 @@ jenkins:
   disableRememberMe: false
   labelAtoms:
   - name: "built-in"
+  - name: "wnode1"
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
+  nodes:
+  - permanent:
+      labelString: "wnode1"
+      launcher:
+        ssh:
+          credentialsId: "jenkins-master-user"
+          host: "3.144.4.151"
+          port: 22
+          sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
+      name: "wnode1"
+      nodeProperties:
+      - toolLocation:
+          locations:
+          - home: "/usr/share/maven"
+            key: "hudson.tasks.Maven$MavenInstallation$DescriptorImpl@default"
+      remoteFS: "/home/jenkins"
+      retentionStrategy: "always"
   numExecutors: 2
   primaryView:
     all:
@@ -28,15 +58,15 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-      - id: "pragra"
-        name: "pragra"
+      - id: "admin"
+        name: "admin"
         properties:
         - "myView"
         - preferredProvider:
             providerId: "default"
         - "timezone"
         - mailer:
-            emailAddress: "pragra@company.com"
+            emailAddress: "admin@company.com"
         - "apiToken"
   slaveAgentPort: -1
   systemMessage: "This is Deepak@Pragra"
@@ -70,6 +100,8 @@ unclassified:
     - "jobBuildDiscarder"
   buildStepOperation:
     enabled: false
+  casCGlobalConfig:
+    configurationPath: "https://raw.githubusercontent.com/bobbybabu007/jenkins-docker-k8s/main/jenkins-demo.yaml"
   email-ext:
     adminRequiredForTemplateTesting: false
     allowUnregisteredEnabled: false
@@ -110,6 +142,9 @@ unclassified:
     injectMavenExtension: false
   junitTestResultStorage:
     storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://3.136.236.211:8080/"
   mailer:
     charset: "UTF-8"
     useSsl: false
