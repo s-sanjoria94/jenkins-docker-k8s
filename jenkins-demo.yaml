@@ -38,6 +38,16 @@ jenkins:
         - mailer:
             emailAddress: "admin@company.com"
         - "apiToken"
+      - id: "deepak"
+        name: "deepak"
+        properties:
+        - "myView"
+        - preferredProvider:
+            providerId: "default"
+        - "timezone"
+        - mailer:
+            emailAddress: "deepak@company.com"
+        - "apiToken"
   slaveAgentPort: -1
   systemMessage: "This is Jenkins@Pragra"
   updateCenter:
