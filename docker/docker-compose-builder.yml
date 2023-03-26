@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  builder:
+    image: jenkins/jnlp-slave
+    container_name: jnlp_slave
+    user: jenkins
+    command: -url http:localhost:8080 <secret> <jenkins_slave>
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - $HOME/builder-volume:/var/jenkins_home
