@@ -1,7 +1,11 @@
-FROM jenkins/jenkins:lts-jdk11
+FROM jenkins/jenkins:2.401.1-lts-jdk11
+LABEL maintainer="bobbybabu@gmail.com"
 
 USER root
+ENV JENKINS_USER admin
+ENV JENKINS_PASS admin
 
+#---------------------Install Tools-----------------------------
 RUN apt-get update && apt-get install -y lsb-release
 
 RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
@@ -15,9 +19,106 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
 RUN apt-get update && \
     apt-get install -y docker-ce-cli wget curl nano sudo zip python-is-python3 maven gradle ansible 
 
+# add jenkins user to sudo & assign Permissions
 RUN sudo usermod -aG sudo jenkins
+#RUN echo "${cur_user} ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-RUN chown -R 775 /var/jenkins_home /tmp
+RUN chown -R 775 /var/jenkins_home /tmp && \
+    chmod -R 775 /var/jenkins_home
+
+EXPOSE 8080
+EXPOSE 50000
+
+#-------------------------Install & Clean---------------------------------
+#RUN sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#RUN echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update && apt-get install -y ca-certificates openssl openssh-server zip unzip tar 
+#kubectl podman
+RUN apt-get clean \
+          && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/man/?? /usr/share/man/??_*
 
 USER jenkins
-#RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
+
+#-------------------------Install Plugins----------------------------------
+# ENV JAVA_OPTS -Djenkins.install.runSetupWizard=true
+RUN jenkins-plugin-cli --plugins \
+    "blueocean docker-workflow" \
+    "git" \
+    "gitlab-plugin" \
+    "docker-plugin" \
+    "ansible" \
+    "terraform" \
+    "credentials" \
+    "ant" \
+    "gradle" \
+    "parameterized-trigger" \
+    "maven-plugin" \
+    "docker-build-step" \
+    "python" \
+    "jfrog" \
+    "copyartifact" \
+    "publish-over-ssh" \
+    "rancher" \
+    "ssh-slaves" \
+    "gitlab-plugin" \
+    "workflow-job" \
+    "workflow-multibranch" \
+    "workflow-step-api" \
+    "workflow-cps" \
+    "workflow-durable-task-step" \
+    "pipeline-model-definition" \
+    "workflow-scm-step" \
+    "ssh-credentials" \
+    "generic-webhook-trigger" \
+    "cloudbees-folder" \
+    "antisamy-markup-formatter" \
+    "credentials-binding" \
+    "kubernetes" \
+    "ec2" \
+    "openshift-sync" \
+    "parallel-test-executor" \
+    "proxmox" \
+    "hudson-pview-plugin" \
+    "nodelabelparameter" \
+    "azure-container-agents" \
+    "sonar" \
+    "jacoco" \
+    "cucumber-reports" \
+    "build-failure-analyzer" \
+    "splunk-devops" \
+    "checkmarx" \
+    "datadog" \
+    "email-ext" \
+    "powershell" \
+    "deploy" \
+    "artifactdeployer" \
+    "aws-lambda" \
+    "codedeploy" \
+    "windows-azure-storage" \
+    "google-storage-plugin" \
+    "packer" \
+    "postbuild-task" \
+    "compress-artifacts" \
+    "zapper" \
+    "timestamper" \
+    "htmlpublisher" \
+    "slack" \
+    "jobConfigHistory" \
+    "configuration-as-code" \
+    "thinBackup" \
+    "github-branch-source" \
+    "custom-folder-icon" \
+    "nexus-artifact-uploader" \
+    "build-pipeline-plugin" \
+    "pipeline-stage-view" \
+    "workflow-aggregator" \
+    "artifactory" \
+    "s3" \
+    "artifact-manager-s3" \
+    "multibranch-scan-webhook-trigger" \
+    "git-parameter" \
+    "slave-status" \
+    "kubernetes-cli" \
+    "docker-compose-build-step" 
+
+

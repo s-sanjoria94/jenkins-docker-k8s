@@ -1,0 +1,119 @@
+FROM jenkins/ssh-agent:jdk11
+
+#--------------------------------Install essential packages--------------------
+
+RUN apt-get update && apt-get install -y \
+    sudo \
+    curl \
+    wget \
+    git \
+    gnupg \
+    unzip \
+    build-essential \
+    nano \
+    make \
+    ca-certificates \
+    software-properties-common \
+    openssl \
+    openssh-server    
+
+#Install Docker CLI
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN apt-get update && apt-get install -y docker-ce-cli
+
+# Install Podman CLI
+RUN apt-get update && apt-get install -y \
+    libapparmor1 \
+    libseccomp2 \
+    fuse-overlayfs
+RUN curl -sSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | gpg --dearmor > /usr/share/keyrings/libpod-archive-keyring.gpg
+RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/libpod-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /" | tee /etc/apt/sources.list.d/podman.list > /dev/null
+RUN apt-get update && apt-get install -y podman
+
+# Install Python with pip
+RUN apt-get install -y python3 python3-pip
+
+# Install Node.js with npm
+RUN curl -sSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+
+# Install Ruby
+RUN apt-get install -y ruby
+
+# Install kubectl
+RUN apt-get update && apt-get install -y apt-transport-https
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update && apt-get install -y kubectl
+
+# Install Maven
+ARG MAVEN_VERSION=3.9.2
+RUN wget https://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    && tar -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz -C /opt \
+    && ln -s /opt/apache-maven-$MAVEN_VERSION /opt/maven \
+    && rm apache-maven-$MAVEN_VERSION-bin.tar.gz
+ENV MAVEN_HOME=/opt/maven
+
+# Install Gradle
+ARG GRADLE_VERSION=8.1
+RUN wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip \
+    && unzip -d /opt gradle-$GRADLE_VERSION-bin.zip \
+    && ln -s /opt/gradle-$GRADLE_VERSION /opt/gradle \
+    && rm gradle-$GRADLE_VERSION-bin.zip
+ENV GRADLE_HOME=/opt/gradle
+
+# Install Sonar-Scanner
+ARG SONAR_SCANNER_VERSION="4.7.0.2747"
+ENV SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}
+
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip && \
+    unzip ./sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip && \
+    mv ./sonar-scanner-${SONAR_SCANNER_VERSION}-linux ./sonar-scanner && \
+    mv ./sonar-scanner /opt && \
+    ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/bin/sonar-scanner && \
+    rm -f /tmp/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip
+
+RUN alias python=python3
+ENV PATH=$PATH:/opt/maven/bin:/opt/gradle/bin:/opt/sonar-scanner/bin:/home/${USERNAME}/zap
+
+# # Install ZAP
+# ARG ZAP_VERSION="2.12.0"
+# ENV ZAP_VERSION=${ZAP_VERSION}
+# ENV USERNAME="jenkins"
+
+# RUN pip install --upgrade zapcli && \
+#     apt-get install -y tar gzip unzip rsync
+
+# RUN mkdir -p /home/${USERNAME}/zap && \
+#     wget https://github.com/zaproxy/zaproxy/releases/download/v${ZAP_VERSION}/ZAP_${ZAP_VERSION}_Linux.tar.gz && \
+#     tar -xzf ZAP_${ZAP_VERSION}_Linux.tar.gz -C /home/${USERNAME}/zap && \
+#     mv /home/${USERNAME}/zap/ZAP*/* /home/${USERNAME}/zap && \
+#     rm ZAP_${ZAP_VERSION}_Linux.tar.gz && \
+#     rm -R /home/${USERNAME}/zap/ZAP*
+# ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk
+
+# ENV PATH $PATH:/home/${USERNAME}/zap/
+# RUN mkdir -p /home/${USERNAME}/_work/ && \
+#     mkdir -p  /home/${USERNAME}/.ZAP/db/ && \
+    # chown -R :0 /home/${USERNAME}/ && \
+    # chmod -R g+w  /home/${USERNAME}/ && \
+    # chmod -R 775 /home/${USERNAME}/_work/ && \
+    # mkdir -p /zap && \
+    # chown -R :0 /zap && \
+    # chmod -R g+w /zap
+
+# Setting Permissions for Jenkins user and home directory
+# RUN sudo usermod -aG sudo jenkins
+# RUN chown -R jenkins /home/jenkins/.ssh && \
+#     chmod 600 /home/jenkins/.ssh/authorized_keys && \
+#     chmod 700 /home/jenkins/.ssh
+
+#------------CASC-Automation----------------------------------
+
+COPY jenkins.yaml /var/jenkins_home/jenkins.yaml
+ENV CASC_JENKINS_CONFIG /var/jenkins_home/jenkins.yaml
+
+
+# Cleanup
+RUN rm -rf /var/lib/apt/lists/*

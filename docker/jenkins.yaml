@@ -1,0 +1,72 @@
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  nodes:
+  - permanent:
+      labelString: "agent java11"
+      launcher:
+        ssh:
+          credentialsId: "build-agent-SSH-creds"
+          host: "agent"
+          javaPath: "/opt/java/openjdk/bin/java"
+          port: 22
+          sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
+      name: "build-agent"
+      nodeDescription: "Slave build agent to run builds via SSH"
+      remoteFS: "/home/jenkins/agent"
+      retentionStrategy: "always"
+  numExecutors: 3
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
+  slaveAgentPort: 50000
+  systemMessage: "Welcome to Jenkins-on-Local, your customized Jenkins running in a container\r\
+    \nURL: http://localhost:8080"
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+tool:
+  dockerTool:
+    installations:
+    - home: "/usr/bin/docker"
+      name: "docker"
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  gradle:
+    installations:
+    - home: "/opt/gradle"
+      name: "gradle"
+  jdk:
+    installations:
+    - home: "/opt/java/openjdk"
+      name: "java11"
+  maven:
+    installations:
+    - home: "/opt/maven"
+      name: "maven"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
+  powerShellInstallation:
+    installations:
+    - home: "powershell.exe"
+      name: "DefaultWindows"
+    - home: "pwsh"
+      name: "DefaultLinux"
+  sonarRunnerInstallation:
+    installations:
+    - home: "/usr/bin/sonar-scanner"
+      name: "sonar"
