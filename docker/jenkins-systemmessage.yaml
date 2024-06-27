@@ -1,0 +1,2 @@
+jenkins:
+  systemMessage: "This is Pragra-Demo Jenkins running locally, I am testing Configuration as Code"
