@@ -1,0 +1,2 @@
+jenkins:
+  systemMessage: "This is Pragra-Demo Jenkins running locally, CasC is sourced from github"
