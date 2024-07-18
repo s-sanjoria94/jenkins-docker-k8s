@@ -70,12 +70,11 @@ ENV GRADLE_HOME=/opt/gradle
 ARG SONAR_SCANNER_VERSION="6.1.0.4477"
 ENV SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}
 
-RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip && \
-    unzip ./sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip && \
-    mv ./sonar-scanner-${SONAR_SCANNER_VERSION}-linux ./sonar-scanner && \
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${S>    unzip ./sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip && \
+    mv ./sonar-scanner-${SONAR_SCANNER_VERSION} ./sonar-scanner && \
     mv ./sonar-scanner /opt && \
     ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/bin/sonar-scanner && \
-    rm -f /tmp/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip
+    rm -f /tmp/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
 
 RUN alias python=python3
 ENV PATH=$PATH:/opt/maven/bin:/opt/gradle/bin:/opt/sonar-scanner/bin:/home/${USERNAME}/zap
@@ -115,7 +114,7 @@ ENV PATH=$PATH:/opt/maven/bin:/opt/gradle/bin:/opt/sonar-scanner/bin:/home/${USE
 #------------CASC-Automation----------------------------------
 
 COPY jenkins.yaml /var/jenkins_home/jenkins.yaml
-ENV CASC_JENKINS_CONFIG /var/jenkins_home/jenkins.yaml
+ENV CASC_JENKINS_CONFIG="/var/jenkins_home/jenkins.yaml"
 
 
 # Cleanup
