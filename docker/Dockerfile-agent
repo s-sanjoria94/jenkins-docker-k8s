@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     nano \
     make \
+    rsync \
+    jq \
+    tar \
+    zip \
     ca-certificates \
     software-properties-common \
     openssl \
@@ -32,7 +36,7 @@ RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/libpod-archive-keyring.g
 RUN apt-get update && apt-get install -y podman
 
 # Install Python with pip
-RUN apt-get install -y python3 python3-pip
+RUN apt-get install -y python3 python3-pip python-is-python3
 
 # Install Node.js with npm
 RUN curl -sSL https://deb.nodesource.com/setup_16.x | bash -
@@ -48,7 +52,7 @@ RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sour
 RUN apt-get update && apt-get install -y kubectl
 
 # Install Maven
-ARG MAVEN_VERSION=3.9.2
+ARG MAVEN_VERSION=3.9.8
 RUN wget https://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
     && tar -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz -C /opt \
     && ln -s /opt/apache-maven-$MAVEN_VERSION /opt/maven \
@@ -56,7 +60,7 @@ RUN wget https://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-
 ENV MAVEN_HOME=/opt/maven
 
 # Install Gradle
-ARG GRADLE_VERSION=8.1
+ARG GRADLE_VERSION=8.9
 RUN wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip \
     && unzip -d /opt gradle-$GRADLE_VERSION-bin.zip \
     && ln -s /opt/gradle-$GRADLE_VERSION /opt/gradle \
@@ -64,7 +68,7 @@ RUN wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zi
 ENV GRADLE_HOME=/opt/gradle
 
 # Install Sonar-Scanner
-ARG SONAR_SCANNER_VERSION="4.7.0.2747"
+ARG SONAR_SCANNER_VERSION="6.1.0.4477"
 ENV SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}
 
 RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip && \
@@ -78,7 +82,7 @@ RUN alias python=python3
 ENV PATH=$PATH:/opt/maven/bin:/opt/gradle/bin:/opt/sonar-scanner/bin:/home/${USERNAME}/zap
 
 # # Install ZAP
-# ARG ZAP_VERSION="2.12.0"
+# ARG ZAP_VERSION="2.15.0"
 # ENV ZAP_VERSION=${ZAP_VERSION}
 # ENV USERNAME="jenkins"
 
