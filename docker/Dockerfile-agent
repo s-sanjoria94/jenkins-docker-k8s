@@ -70,7 +70,8 @@ ENV GRADLE_HOME=/opt/gradle
 ARG SONAR_SCANNER_VERSION="6.1.0.4477"
 ENV SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}
 
-RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${S>    unzip ./sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip && \
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip && \
+    unzip ./sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip && \
     mv ./sonar-scanner-${SONAR_SCANNER_VERSION} ./sonar-scanner && \
     mv ./sonar-scanner /opt && \
     ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/bin/sonar-scanner && \
