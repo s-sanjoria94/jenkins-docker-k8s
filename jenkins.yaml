@@ -24,7 +24,7 @@ jenkins:
           - envVar:
               key: "JENKINS_URL"
               value: "http://jenkins.jenkins.svc.cluster.local:8080/"
-          image: "jenkins/inbound-agent:4.11.2-4"
+          image: "jenkins/inbound-agent:latest-jdk17"
           name: "jnlp"
           resourceLimitCpu: "512m"
           resourceLimitMemory: "512Mi"
