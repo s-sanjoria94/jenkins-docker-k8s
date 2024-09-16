@@ -1,0 +1,78 @@
+FROM jenkins/inbound-agent:latest
+
+LABEL maintainer="Bobby.Babu"
+
+# Use root user to install necessary tools
+USER root
+
+# Update the package list and install tools
+RUN apt-get update && apt-get install -y wget curl zip tar unzip nano jq yq lsb-release && \
+    # apt install -y openjdk-21-jre yarn && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install CI/CD Tools
+RUN apt update -y && apt install -y git yarn build-essential python3 python3-venv python-is-python3 maven gradle nodejs npm && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Sonar Scanner CLI
+ARG SONAR_SCANNER_VERSION=4.8.0.2856
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip -O /tmp/sonar-scanner.zip && \
+    unzip /tmp/sonar-scanner.zip -d /tmp && \
+    mv /tmp/sonar-scanner-${SONAR_SCANNER_VERSION}-linux /tmp/sonar && \
+    mv /tmp/sonar /usr/bin/sonar && \
+    ln -s /usr/bin/sonar/bin/sonar-scanner /usr/bin/sonar-scanner
+
+# Install NodeJS tools
+# ARG NVM_VERSION=v0.40.1
+# RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash
+# ENV NVM_DIR=/root/.nvm
+# ENV PATH=$NVM_DIR/versions/node/$(nvm current)/bin:$PATH
+
+RUN npm install -g @angular/cli newman eslint prettier
+
+# Install Container tools
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash && \
+    mv /usr/local/bin/helm /usr/bin/helm
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
+    chmod +x ./kubectl && \
+    mv ./kubectl /usr/bin
+ARG TERRAFORM_VERSION=1.9.5
+RUN curl "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -o "/tmp/terraform.zip" && \
+    unzip /tmp/terraform.zip && \
+    mv terraform /usr/bin
+RUN apt-get update && \
+    apt-get install -y software-properties-common gnupg2 && \
+    echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main" > /etc/apt/sources.list.d/ansible.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 && \
+    apt-get update && \
+    apt-get install -y ansible
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/tmp/awscli-bundle.zip" && \
+    unzip /tmp/awscli-bundle.zip -d /tmp/ && \
+    /tmp/awscli-bundle/install -i /usr/bin/aws -b /usr/local/bin/aws && \
+    aws --version
+    
+# RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg |  gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+#     apt-get update &&  apt-get install -y google-cloud-cli
+
+# Create & set ownership for tool directories  
+RUN mkdir -p /var/maven/.m2 && chown -R jenkins:jenkins /var/maven
+RUN mkdir -p /home/jenkins/.aws /home/jenkins/.azure /var/maven/.m2 && \
+    chown -R jenkins:jenkins /home/jenkins/.aws /home/jenkins/.azure /var/maven
+
+# Set environment
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV MAVEN_HOME=/usr/share/maven
+ENV MAVEN_CONFIG=/var/maven/.m2
+ENV SONAR_SCANNER_HOME=/usr/bin/sonar
+ENV PATH=$PATH:$MAVEN_HOME/bin:$SONAR_SCANNER_HOME/bin
+
+# Cleanup
+RUN rm -rf /tmp/* && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch back to the Jenkins user after installation
+USER jenkins
+
+# Expose (default agent) ports 
+EXPOSE 8080 50000
