@@ -1,0 +1,11 @@
+[test]
+localhost  ansible_user=jenkins  ansible_password=jenkins  ansible_become_password=jenkins  ansible_sudo_pass=jenkins
+
+[appservers]
+10.0.0.0
+10.0.0.1
+
+[webservers]
+10.0.0.2
+10.0.0.3
+10.0.0.4

@@ -1,0 +1,14 @@
+- name: name of the playbook
+  hosts: test
+  become: yes
+  tasks:
+  - name: check if server is reachable
+    ansible.builtin.ping:
+
+  - name: create a file
+    ansible.builtin.file:
+      path: /home/jenkins/ansible/file.conf
+      owner: jenkins
+      group: root
+      mode: '0755'
+      state: touch
