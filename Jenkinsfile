@@ -11,7 +11,7 @@ pipeline
         {
             steps
             {
-                git branch: 'main', url: 'https://github.com/bobbybabu007/jenkins-first-build-project'
+                git branch: 'main', url: 'https://github.com/s-sanjoria94/jenkins-docker-k8s.git'
                 sh 'mvn clean install -DskipTests'
             } 
         }
