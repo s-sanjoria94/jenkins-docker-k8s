@@ -1,5 +1,5 @@
 [test]
-localhost  ansible_user=jenkins  ansible_password=jenkins  ansible_become_password=jenkins  ansible_sudo_pass=jenkins
+localhost  ansible_user=jenkins  ansible_password=jenkins  ansible_become_password=jenkins  ansible_sudo_pass=jenkins123
 
 [appservers]
 10.0.0.0
